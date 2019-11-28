@@ -8,6 +8,7 @@ def draw_graph(title, mase, lege_dodajanje, premer, dolzina, lege_odstranjanje=[
 
     # pi*(2r/2)^2
     presek = ((premer/2/(10**6))**2)*math.pi  # m^2
+    print('presek je:', presek)
 
     def calc_delta(lege, reverse=False):
         new_list = []
@@ -58,13 +59,17 @@ def draw_graph(title, mase, lege_dodajanje, premer, dolzina, lege_odstranjanje=[
         fit_func, x[:(len(x)-ignoriraj_zadnji)], y[:(len(y)-ignoriraj_zadnji)])
     a = params[0]
 
+    err = params[1][0][0]**(1/2)*2/a
+    print(err)
+
     x_fit = np.linspace(x[0], x[-1], 100)
 
     y_fit = fit_func(x_fit, a)
 
     # /fit
 
-    print(f"Calculated E {title} is:", '%.3g' % int(a**-1), 'N/cm^2')
+    print(f"Calculated E {title} is:", '%.3g' % int(
+        a**-1), '(1+/-', '%.2g)' % err, 'N/cm^2')
 
     plt.plot(x, y, 'o', label='Dodajanje uteži')
     plt.plot(x_fit, y_fit, label=r'$1/E$')
@@ -88,7 +93,7 @@ def draw_graph(title, mase, lege_dodajanje, premer, dolzina, lege_odstranjanje=[
     plt.grid(True)
 
     plt.legend()
-    plt.savefig(f'vaja20/raztezek_{title}_zice', dpi=300)
+    plt.savefig(f'./raztezek_{title}_zice', dpi=300)
     print('saved')
     plt.show()
 
