@@ -52,11 +52,11 @@ mtr = params[0][1]
 
 
 def ni(mtr, mg, r1, r2, omega, h):
-    return ((mtr-mg)*(r1**2-r2**2) / (4*math.pi*omega*h*r1**2*r2**2))
+    return ((mtr-mg)*(r1**2-r2**2), (4*math.pi*omega*h*r1**2*r2**2))
 
 
-for (om, mg) in zip(omege, y):
-    print(ni(mtr, mg, r1, r2, om, h))
+def ni1(mtr, mg, r1, r2, omega, h):
+    return (mg/omega/(4*math.pi*h*r1**2*r2**2/(r2**2-r1**2)))
 
 
 #####
@@ -76,6 +76,50 @@ plt.grid(True)
 
 plt.legend()
 plt.savefig(f'./J', dpi=300)
+# print('saved')
+
+plt.show()
+
+# nigraf
+nix = []
+niy = []
+
+for (om, mg) in zip(omege, y):
+    x, y = ni(mtr, mg, r1, r2, om, h)
+    nix.append(y)
+    niy.append(x)
+    print(x, y)
+
+
+params = curve_fit(fit_func, nix, niy)
+
+print(params[1][0][0])
+
+err = (params[1][0][0])**(1/2)
+
+print(params)
+
+
+print("Ni je:", '%.3g' %
+      params[0][0], 'enota', '+/-', '%.3g' % err, 'enota')
+
+plt.plot(nix, niy, 'o', label='Točke')
+
+
+x_fit = np.linspace(0, nix[-1]+nix[-1]*0.1, 100)
+
+y_fit = fit_func(x_fit, params[0][0], params[0][1])
+
+plt.plot(x_fit, y_fit, label=r'Fit')
+
+plt.title(r'Graf končnega $\eta$')
+plt.xlabel(r'$4 \pi \omega h r_1^2 r_2^2$')
+plt.ylabel(r'$(M_{tr} - M_g)(r_1^2-r_2^2)$')
+
+plt.grid(True)
+
+
+plt.legend()
 # print('saved')
 
 
