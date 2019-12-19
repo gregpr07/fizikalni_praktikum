@@ -49,4 +49,6 @@ g = rac_g(t, h, s)
 
 print(g)
 
+plt.savefig(f'./gaussova', dpi=300)
+
 plt.show()
