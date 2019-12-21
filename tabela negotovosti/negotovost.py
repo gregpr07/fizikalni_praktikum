@@ -7,21 +7,20 @@ from decimal import Decimal
 ####################################################################
 ####################################################################
 
-racunamo = 'g'
+racunamo = 'k'
 
-text_size = 15
+text_size = 20
 
-h, s, t = symbols('h s t')
+ro, d1, d2 = symbols(r'\rho d1 d2')
 
 
 data = [
-    (h, [0.0994, 0.00001]),
-    (s, [0.215, 0.001]),
-    (t, [0.110856, 0.00005])
+    (ro, [13000, 0]),
+    (d1, [0.006, 0.1*10**-6]),
+    (d2, [0.0128, 0.1*10**-6])
 ]
 
-function = ((sqrt(2 * h) +
-             sqrt(2 * (h + s))) / t)**2
+function = ro*(1/(pi*d2**2)**2-1/(pi*d1**2)**2)/2
 
 
 ####################################################################
@@ -39,35 +38,36 @@ for el in data:
     latfunc = '$'+latex(res)+'$'
     results.append((latfunc, deltaa, '%.4E' % Decimal(error)))
 
-final_error = sqrt(sum([abs(float(x[2])) for x in results]))
+final_error = (sum([abs(float(x[2])) for x in results]))
 print(final_error)
 
 if not text_size:
     text_size = 15
 
-columns = [r'$\frac{da}{dx}$',
-           r'$\Delta a$', r'$(\Delta a \frac{da}{dx})^2$']
-rows = [x[0] for x in data]
+columns = [r'$\frac{\partial %s}{\partial x_i}$' % racunamo,
+           r'$\sigma_i$', r'$\sigma_i \cdot \frac{\partial %s}{\partial x_i}$' % racunamo]
+rows = ['$'+str(x[0])+'$' for x in data]
 
 plt.title('Negotovost za funkcijo')
 
 plt.xticks([])
 plt.yticks([])
 
-plt.subplots_adjust(left=0.03, bottom=0, right=0.96, top=0.94)
+plt.subplots_adjust(left=0.05, bottom=0, right=0.97, top=0.94)
 
 plt.axis('off')
 
 table = plt.table(cellText=results, loc='center left',
                   rowLabels=rows, colLabels=columns)
 
-plt.text(0.35, 0.85, '$'+latex(function)+'$', fontsize=text_size+5)
+plt.text(0.35, 0.85, '$'+racunamo+'=' +
+         latex(function)+'$', fontsize=text_size+5)
 table.set_fontsize(text_size)
 table.scale(1, 4)
 table.auto_set_font_size(False)
 
 plt.text(0.35, 0.1, r'$\Delta '+racunamo+' = ' +
-         str(final_error)+'$', fontsize=text_size+4)
+         '%.4E' % final_error+'$', fontsize=text_size+4)
 
 
 plt.show()
